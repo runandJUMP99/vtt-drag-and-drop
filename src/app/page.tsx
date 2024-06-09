@@ -1,113 +1,160 @@
+"use client";
+import { useState } from "react";
 import Image from "next/image";
 
+// create the type for the location item
+interface Location {
+  id: string;
+  address: string;
+  imgPath: string;
+  name: string;
+}
+
+// dummy data used for the list of locations.
+const dummyData: Location[] = [
+  {
+    id: "1",
+    address: "Sydney, Australia",
+    imgPath: "/scotland-island-1.jfif",
+    name: "Scotland Island",
+  },
+  {
+    id: "2",
+    address: "Lorem ipsum, Dolor",
+    imgPath: "/the-charles-grand-brasseire-and-bar.jfif",
+    name: "The Charles Grand Brasseire & Bar",
+  },
+  {
+    id: "3",
+    address: "Dolor, Sit amet",
+    imgPath: "/bridge-climb.png",
+    name: "Bridge Climb",
+  },
+  {
+    id: "4",
+    address: "Sydney, Australia",
+    imgPath: "/scotland-island-2.jfif",
+    name: "Scotland Island",
+  },
+  {
+    id: "5",
+    address: "Ecetera veni, Vidi vici",
+    imgPath: "/clam-bar.png",
+    name: "Clam Bar",
+  },
+  {
+    id: "6",
+    address: "Sydney, Australia",
+    imgPath: "/vivid-festival.png",
+    name: "Vivid Festival",
+  },
+];
+
 export default function Home() {
+  const [locations, setLocations] = useState(dummyData);
+  const [draggedLayerIndex, setDraggedLayerIndex] = useState<number | null>(
+    null
+  );
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <main className="grid place-content-center py-5">
+      <ul>
+        {locations.map((location, i) => {
+          const draggedLayer =
+            draggedLayerIndex !== null ? locations[draggedLayerIndex] : null;
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+          return (
+            <>
+              {i === 1 && (
+                <section
+                  className={`w-full flex item-center justify-center h-[3px]${
+                    draggedLayer ? " bg-[#1E9BF0]" : " bg-white"
+                  }`}
+                >
+                  {draggedLayer && (
+                    <div className="w-72 bg-white h-16 rounded-md border p-4 flex items-center gap-x-3 relative bottom-[32px] shadow-[0_8px_16px_0_rgba(6, 31, 48, 0.08)]">
+                      <Image
+                        alt={draggedLayer?.name || ""}
+                        className="rounded-[5px] h-8 w-8 object-cover"
+                        height={32}
+                        objectFit="cover"
+                        src={draggedLayer?.imgPath || ""}
+                        width={32}
+                      />
+                      <p className="leading-6 text-[17px]">
+                        {draggedLayer?.name}
+                      </p>
+                    </div>
+                  )}
+                </section>
+              )}
+              <li
+                key={location.id}
+                className="bg-white flex items-center gap-x-6 px-10 py-5 border-y border-white"
+                draggable
+                onDragOver={e => e.preventDefault()}
+                onDragStart={() => setDraggedLayerIndex(i)}
+                onDrop={e => {
+                  e.preventDefault();
+                  if (!draggedLayer || draggedLayerIndex === null) return;
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+                  const reorderedLocations = locations.map((layer, j) => {
+                    // if current item index is less than or greater than both the item we are dropping on and the currently grabbed item,
+                    // then the layer won't be moved
+                    if (
+                      (j < i && j < draggedLayerIndex) ||
+                      (j > i && j > draggedLayerIndex)
+                    ) {
+                      return layer;
+                      // else if current item index is equal to the item we are dropping on, then the grabbed item should replace that spot
+                    } else if (j === i) {
+                      return draggedLayer;
+                      // else shift item up or down one spot
+                    } else if (i < draggedLayerIndex) {
+                      return locations[j - 1];
+                    } else {
+                      return locations[j + 1];
+                    }
+                  });
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+                  setLocations(reorderedLocations);
+                  setDraggedLayerIndex(null);
+                }}
+              >
+                <Image
+                  alt={location.name}
+                  className="rounded-xl h-24 w-24 object-cover"
+                  height={96}
+                  src={location.imgPath}
+                  width={96}
+                />
+                <section className="flex flex-col gap-y-1 px-1">
+                  <p className="leading-6 text-[19px]">{location.name}</p>
+                  <div className="flex items-center gap-x-1">
+                    <svg
+                      width="12"
+                      height="16"
+                      viewBox="0 0 12 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M5.99987 2.25C4.4995 2.25 3.2832 3.46629 3.2832 4.96667C3.2832 6.46704 4.4995 7.68333 5.99987 7.68333C7.50024 7.68333 8.71654 6.46704 8.71654 4.96667C8.71654 3.46629 7.50024 2.25 5.99987 2.25ZM1.7832 4.96667C1.7832 2.63787 3.67107 0.75 5.99987 0.75C8.32867 0.75 10.2165 2.63787 10.2165 4.96667C10.2165 7.03945 8.72093 8.76293 6.75 9.11681V12C6.75 12.4142 6.41421 12.75 6 12.75C5.58579 12.75 5.25 12.4142 5.25 12V9.11686C3.27894 8.76308 1.7832 7.03955 1.7832 4.96667ZM1.5 13.75C1.08579 13.75 0.75 14.0858 0.75 14.5C0.75 14.9142 1.08579 15.25 1.5 15.25H10.5C10.9142 15.25 11.25 14.9142 11.25 14.5C11.25 14.0858 10.9142 13.75 10.5 13.75H1.5Z"
+                        fill="#A8A9AE"
+                      />
+                    </svg>
+                    <p className="text-[17px] leading-[22px] text-[#A8A9AE]">
+                      {location.address}
+                    </p>
+                  </div>
+                </section>
+              </li>
+            </>
+          );
+        })}
+      </ul>
     </main>
   );
 }

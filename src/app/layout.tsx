@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const gelion = localFont({
+  src: [
+    {
+      path: "../../public/fonts/Gelion-Medium.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../public/fonts/Gelion-Regular.ttf",
+      weight: "400",
+    },
+  ],
+  variable: "--font-gelion",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${gelion.variable} font-sans`}>{children}</body>
     </html>
   );
 }
