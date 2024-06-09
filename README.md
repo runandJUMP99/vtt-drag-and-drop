@@ -7,3 +7,8 @@ I'm currently looking to add to my skills and am studying for the DevOps Enginee
 Lastly, not only do I have 3 years of professional programming experience, I am self-taught, and also have 5 years of work from home experience, so docs don't scare me!💪
 
 Thanks again for your time, and hope to hear from you soon!
+
+npm i
+npm run dev
+
+Have fun dragging and dropping!
